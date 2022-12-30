@@ -1,0 +1,14 @@
+{
+    "config": {
+        "apiKey": "AIzaSyDJbIeZQ58gUFYotOWMyDBOnP-ZlyZfxDo",
+        "authDomain": "vitartpush.firebaseapp.com",
+        "projectId": "vitartpush",
+        "storageBucket": "vitartpush.appspot.com",
+        "messagingSenderId": "487218904228",
+        "appId": "1:487218904228:web:9336554084396a64257a31",
+        "measurementId": "G-QCRDB32550"
+    },
+    "ServerKey": "AAAAcXCCfKQ:APA91bG7sgThz5HeE8FBS8zQL0tYAIz8fc-6ol_wJ77f2slcIFJR9uzfCxUG8PUYS2j_4l8qrawF6lwB5bAO9iegq0FjZSUy7mAe0a8fUIB2M1rxVznTVlJfKfrZqQttIgpojheN_EUy",
+    "SenderID": "487218904228",
+    "KeyPair": "BC1NroXoY3BG2VFYqS4lyJua7PHXc18uKzAOoRxvTu9answ3JMwkjSS52m3a83OK6IRI0R4HOpYfvQS5CRVw2Us"
+}
