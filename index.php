@@ -27,3 +27,4 @@ require_once(QR_DIR . 'qrlib.php');
 //Подключение Router
 $router = new Router();
 $router->run();
+
