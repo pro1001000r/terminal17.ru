@@ -406,7 +406,7 @@ class AjaxController
 
                     $vp['users_id'] =  $vTab['userid'];
                     $vp['date'] = VFunc::vTimeNow();
-                    $vp['count'] =   $invred['count'] + $vTab['nomencount'];
+                    $vp['count'] =   $invred['count'] + $vTab['count'];
                     $vp['comment'] =  "Изменено";
 
                     VDb2::update('stocktaking', $invred['id'], $vp);
@@ -422,7 +422,7 @@ class AjaxController
                     $vp['storage_id'] =  $vTab['storageid'];
                     $vp['box_id'] =  $vTab['boxid'];
                     $vp['nomen_id'] =  $vTab['nomenid'];
-                    $vp['count'] =  $vTab['nomencount'];
+                    $vp['count'] =  $vTab['count'];
                     $vp['comment'] =  "Первые пробные записи";
 
                     VDb2::create('stocktaking', $vp);
