@@ -406,7 +406,8 @@ class AjaxController
 
                     $vp['users_id'] =  $vTab['userid'];
                     $vp['date'] = VFunc::vTimeNow();
-                    $vp['count'] =   $invred['count'] + $vTab['count'];
+                    //$vp['count'] =   $invred['count'] + $vTab['count'];
+                    $vp['count'] =   $vTab['count'];
                     $vp['comment'] =  "Изменено";
 
                     VDb2::update('stocktaking', $invred['id'], $vp);
@@ -468,7 +469,8 @@ class AjaxController
                 if ($count == $countall) {
                     $findlist = $count;
                 } else {
-                    $findlist = $count . '(' . $countall . ')';
+                    //$findlist = $count . '(' . $countall . ')';
+                    $findlist = $count;
                 }
             } else {
                 $findlist = null;
