@@ -300,6 +300,31 @@ class AjaxController
             return true;
         };
 
+        //МобильноеПриложение Получение номенклатуры по id
+        if (isset($sVit['mobileGetNomen'])) {
+            if (!empty($sVit['mobileGetNomen'])) {
+
+                $id = $sVit['mobileGetNomen'];
+                //$vBarcode = '46214409';
+
+                $sqlArray[] =  "SELECT * FROM nomen WHERE (id = " . $id . ")";
+
+                $findlist1 = VDb::getSQLPackage($sqlArray);
+
+                if (count($findlist1) > 0) {
+                    $findlist = $findlist1[0];
+                    $findlist['error'] = false;
+                } else {
+                    $findlist['error'] = true;
+                };
+            } else {
+                $findlist = [];
+            }
+            $str = json_encode($findlist);
+            echo $str;
+            return true;
+        };
+
         //МобильноеПриложение Присвоение штрихкода товару
         if (isset($sVit['mobileAddBarcode'])) {
             if (!empty($sVit['mobileAddBarcode'])) {
