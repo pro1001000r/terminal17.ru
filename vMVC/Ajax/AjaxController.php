@@ -249,15 +249,19 @@ class AjaxController
                     $vFind2 = $vFindarray[2];
                 };
 
-                $sqlNomen =  "SELECT * FROM nomen Nom 
-                            WHERE ((Nom.name LIKE '%" . $vFind0 . "%') AND (Nom.name LIKE '%" . $vFind1 . "%') AND (Nom.name LIKE '%" . $vFind2 . "%'))
-                            OR ((Nom.comment LIKE '%" . $vFind0 . "%') AND (Nom.comment LIKE '%" . $vFind1 . "%') AND (Nom.comment LIKE '%" . $vFind2 . "%'))
-                            OR ((Nom.price LIKE '%" . $vFind0 . "%') AND (Nom.comment LIKE '%" . $vFind1 . "%') AND (Nom.comment LIKE '%" . $vFind2 . "%'))
-                            OR ((Nom.code1c LIKE '%" . $vFind0 . "%') AND (Nom.name LIKE '%" . $vFind1 . "%') AND (Nom.name LIKE '%" . $vFind2 . "%'))";
+                // $sqlNomen =  "SELECT * FROM nomen Nom 
+                //             WHERE ((Nom.name LIKE '%" . $vFind0 . "%') AND (Nom.name LIKE '%" . $vFind1 . "%') AND (Nom.name LIKE '%" . $vFind2 . "%'))
+                //             OR ((Nom.comment LIKE '%" . $vFind0 . "%') AND (Nom.comment LIKE '%" . $vFind1 . "%') AND (Nom.comment LIKE '%" . $vFind2 . "%'))
+                //             OR ((Nom.price LIKE '%" . $vFind0 . "%') AND (Nom.comment LIKE '%" . $vFind1 . "%') AND (Nom.comment LIKE '%" . $vFind2 . "%'))
+                //             OR ((Nom.code1c LIKE '%" . $vFind0 . "%') AND (Nom.name LIKE '%" . $vFind1 . "%') AND (Nom.name LIKE '%" . $vFind2 . "%'))";
 
-                // $sqlArray[] = "CREATE TEMPORARY TABLE vittemp " . $sqlLinksite . " UNION ALL " . $sqlNomen . " UNION ALL " . $sqlCategory;
-                $sqlArray[] = "CREATE TEMPORARY TABLE vittemp " . $sqlNomen;
-                $sqlArray[] = "SELECT * FROM vittemp ORDER BY name;";
+                // // $sqlArray[] = "CREATE TEMPORARY TABLE vittemp " . $sqlLinksite . " UNION ALL " . $sqlNomen . " UNION ALL " . $sqlCategory;
+                // $sqlArray[] = "CREATE TEMPORARY TABLE vittemp " . $sqlNomen;
+                // $sqlArray[] = "SELECT * FROM vittemp ORDER BY name;";
+
+                $sqlArray[] =  "SELECT * FROM nomen Nom 
+                WHERE ((Nom.stringfind LIKE '%" . $vFind0 . "%') AND (Nom.stringfind LIKE '%" . $vFind1 . "%') AND (Nom.stringfind LIKE '%" . $vFind2 . "%'))
+                OR ((Nom.barcode LIKE '%" . $vFind0 . "%') AND (Nom.barcode LIKE '%" . $vFind1 . "%') AND (Nom.barcode LIKE '%" . $vFind2 . "%'))";
 
                 $findlist = VDb::getSQLPackage($sqlArray);
                 //$findlist = "Есть данные";
@@ -509,7 +513,36 @@ class AjaxController
         if (isset($sVit['getstocktaking'])) {
             if (!empty($sVit['getstocktaking'])) {
 
-                $sqlArray[] =  "SELECT * FROM stocktaking ORDER BY date DESC";
+                $sqllj = "SELECT 
+                S.date as date, 
+                S.count as count,
+                S.comment as comment,
+
+                S.nomen_id as nomen_id, 
+                N.code1c as nomencode1c, 
+                N.name as nomenname, 
+                N.barcode as barcode, 
+
+                S.users_id as users_id, 
+                U.code1c as userscode1c, 
+                U.name as usersname, 
+               
+                S.box_id as box_id, 
+                B.code1c as boxcode1c, 
+                B.name as boxname, 
+                St.name as storagename, 
+                St.id as storage_id 
+               
+                FROM stocktaking S 
+                LEFT JOIN nomen N ON S.nomen_id = N.id
+                LEFT JOIN users U ON S.users_id = U.id
+                LEFT JOIN box B ON S.box_id = B.id
+                LEFT JOIN storage St ON S.storage_id = St.id
+                ORDER BY date DESC";
+
+                //$sqlArray[] =  "SELECT * FROM stocktaking ORDER BY date DESC";
+                $sqlArray[] = "CREATE TEMPORARY TABLE vittemp " . $sqllj;
+                $sqlArray[] = "SELECT * FROM vittemp";
 
                 $findlist = VDb::getSQLPackage($sqlArray);
                 //$findlist = "Есть данные";
@@ -549,6 +582,104 @@ class AjaxController
             echo $str;
             return true;
         };
+
+        //МобильноеПриложение установка данных ЮЗЕРА
+        if (isset($sVit['mobileSetUserParams'])) {
+            if (!empty($sVit['mobileSetUserParams'])) {
+
+                $vparams = $sVit['mobileSetUserParams'];
+
+                //здесь ищем запись
+
+                $sqlArray[] =  "SELECT * FROM  userparams 
+                        WHERE (users_id = " . $vparams['users_id'] . ")";
+                $isuser = VDb::getSQLPackage($sqlArray);
+
+                if ($isuser != []) {
+                    //Редактируем
+                    $userred  = $isuser[0];
+
+                    $vp['storage_id'] =  $vparams['storage_id'];
+                    $vp['box_id'] =   $vparams['box_id'];
+
+                    VDb2::update('userparams', $userred['id'], $vp);
+
+                    $res = 'Изменены параметры';
+                } else {
+
+                    //Если нет то новая
+                    $vp['users_id'] =  $vparams['users_id'];
+                    $vp['storage_id'] =  $vparams['storage_id'];
+                    $vp['box_id'] =  $vparams['box_id'];
+                   
+                    VDb2::create('usersparams', $vp);
+
+                    $res = 'Добавлено в параметры';
+                }
+            } else {
+                $res = null;
+            }
+            $str = json_encode($res);
+            echo $str;
+            return true;
+        };
+
+
+        //МобильноеПриложение добавление места инвентаризации
+        if (isset($sVit['mobileAddBox'])) {
+            if (!empty($sVit['mobileAddBox'])) {
+
+                $box = $sVit['mobileAddBox'];
+                $boxname = $box['name'];
+                $storageid = $box['storageid'];
+
+                //здесь ищем запись
+
+                $sqlArray[] =  "SELECT * FROM  box 
+                WHERE (box.name = '" . $boxname . "' )
+                AND (box.storage_id = " . $storageid . ")";
+                $isbox = VDb::getSQLPackage($sqlArray);
+
+                if ($isbox != []) {
+                    $res = $isbox[0]['id'];
+                } else {
+
+                    //Если нет то новая
+
+                    $vp['storage_id'] = $storageid;
+                    $vp['name'] = $boxname;
+
+                    $idlast = VDb2::create('box', $vp);
+
+                    $res = $idlast;
+                }
+            } else {
+                $res = null;
+            }
+            $str = json_encode($res);
+            echo $str;
+            return true;
+        };
+
+        //МобильноеПриложение Получение мест инвентаризации
+        if (isset($sVit['mobileGetBox'])) {
+            if (!empty($sVit['mobileGetBox'])) {
+
+                $storageid = $sVit['mobileGetBox'];
+
+                //здесь ищем запись
+
+                $sqlArray[] =  "SELECT * FROM  box 
+                WHERE (box.storage_id = " . $storageid . ") ORDER BY name";
+                $res = VDb::getSQLPackage($sqlArray);
+            } else {
+                $res = null;
+            }
+            $str = json_encode($res);
+            echo $str;
+            return true;
+        };
+
 
 
 

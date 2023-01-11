@@ -100,9 +100,10 @@
                 {* &nbsp;&copy;  *}
                 <span class="glyphicon glyphicon-home"></span> Кызыл, Интернациональная 117
                 <br>
-                <a class="btn vit-color-0 bi-globe2 vShadowT" href="https://yandex.ru/maps/?rtext=~51.702920,94.453774" target="_blank"> Построить маршрут в Яндекс.Карты</a>
+                <a class="btn vit-color-0 bi-globe2 vShadowT" href="https://yandex.ru/maps/?rtext=~51.702920,94.453774"
+                    target="_blank"> Построить маршрут в Яндекс.Карты</a>
                 {* {button name = 'Построить маршрут в Яндекс.Карты' href = 'https://yandex.ru/maps/?rtext=~51.702920,94.453774' icon='bi-globe2' freeParam = 'target="_blank"'} *}
-                
+
             <div class="text-left">
                 Мебель:<br>
                 <a class="btn vit-color-0 bi-telephone-fill vShadowT" href="tel: +73942266706"> +7(39422)66706</a>
@@ -135,6 +136,9 @@
             </p>
             <div class="d-none">
 
+            </div>
+            <div>
+                {button name='ObmenSite.epf' icon='bi-box-arrow-down' href="/downloads/ObmenSite.epf" comment='Скачать Обработку ОбменССайтом'}
             </div>
         </div>
     </div>

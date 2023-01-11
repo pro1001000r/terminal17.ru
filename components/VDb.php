@@ -464,7 +464,9 @@ class VDb
         // Текст запроса к БД
         $dbSql = new Db();
         $sql = $dbSql->delete($tableName);
-
+        //обнуляем счетчик
+        $sql .= "; ALTER TABLE ".$tableName." AUTO_INCREMENT=1";
+        VDb::log($sql);
         // Получение и возврат результатов. Используется подготовленный запрос
         $result = $db->prepare($sql);
         return $result->execute();
